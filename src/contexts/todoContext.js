@@ -1,29 +1,27 @@
-import React , {createContext,useState,useEffect} from 'react';
+import React , {createContext,useReducer,useEffect} from 'react';
+import {TodoReducer} from '../reducers/TodoReducer'
+import {GET_TODOS,SAVE_TODO} from '../reducers/ActionTypes'
 export const ListTodoContext = createContext()
-
 const TodoContextProvider = ({children}) => {
-    const [todos, setTodos] = useState([])
+    
+    const [todos, dispatch] = useReducer(TodoReducer, [])
+    
+    useEffect(() => {
+        dispatch({
+            type: GET_TODOS,
+            payload:null
+        })
+    },[])
 
     useEffect(() => {
-        console.log('chay 1 lan sau khi comp render va ko chay nua')
-        const todos = localStorage.getItem('todos')
-        todos && setTodos(JSON.parse(todos))
-    },[])
-    useEffect(() => {
-        console.log('useEffect run')
-        localStorage.setItem('todos',JSON.stringify(todos))
+       dispatch({
+           type: SAVE_TODO,
+           payload: {todos},
+       })
     },[todos])
-    // function add, delete
-    const addTodo = todo => {
-        // console.log(todo)
-        setTodos([...todos, todo])
-    }
-    const deleteTodo = id => {
-        // console.log(id)
-        setTodos(todos.filter(todo => todo.id !== id))
-    }
+ 
     // todo context data
-    const TodoData = {todos,addTodo,deleteTodo}
+    const TodoData = {todos,dispatch}
     // create provider
     return(
         <ListTodoContext.Provider value = {TodoData}>

@@ -1,9 +1,10 @@
 import React, {useState,useContext} from 'react'
 import {ListTodoContext} from '../contexts/todoContext'
 import {v4} from 'uuid';
+import * as Type from '../reducers/ActionTypes'
 function TodoForm() {
     const [value, setValue] = useState('')
-    const {addTodo} = useContext(ListTodoContext)
+    const {dispatch} = useContext(ListTodoContext)
     function handleInput(e){
         // console.log(e.target.value)
         setValue(e.target.value)
@@ -15,7 +16,10 @@ function TodoForm() {
             id: v4(),
             title: value
         }
-        addTodo(formValue)
+        dispatch({
+            type:Type.ADD_TODO,
+            payload: {todos: formValue}
+        })
         setValue('')
     }
     return(
